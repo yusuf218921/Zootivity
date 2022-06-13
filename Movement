@@ -1,0 +1,83 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Movement : MonoBehaviour
+{
+
+    [SerializeField]
+
+    public CharacterController controller;
+    public GameObject Control;
+    public Transform ModelCam;
+    public float speed = 30f;                                    //Karakterin hızı(Unityen Değiştirilebilir)
+    public float smoothTurningTime = 0.1f;                      //Karakterin Dönüşlerini Yumuşatmak için atanmış bir zaman değeri
+    public bool setGravity = true;
+    public bool setMovement = false;
+    public bool setAnimation = false;
+    public Animator animDog;
+    public Animator animDogL;
+    public Animator animLion;
+    public Animator animLionD;
+
+    public static float speedAnim = 0f;
+    private float smoothTurningVel;                              //Karakterin Dönüşlerini Yumuşatmak için atanmış bir hız değeri
+    private float verticalVel;
+    private float gravity = 14f;
+    private float angleX;
+    private float angleZ;
+
+                         
+
+
+
+
+    private void Update()
+    {                                   /*              Movement            */
+        if (setMovement)
+        {
+            float InputX = Input.GetAxisRaw("Horizontal");          //Yatay inputları float türünde depolayan değişken
+            float InputZ = Input.GetAxisRaw("Vertical");            //Dikey inputları float türünde depolayan değişken
+            Vector3 Direction = new Vector3(InputX, 0f, InputZ);
+
+            if (Direction.magnitude >= 0.1f)
+            {
+                angleX = Control.transform.rotation.x;
+                angleZ = Control.transform.rotation.z;
+                float modelAngle = Mathf.Atan2(Direction.x, Direction.z) * Mathf.Rad2Deg + ModelCam.eulerAngles.y;                   //modelin haraket yerine göre dönmesini sağlayan metot
+                float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, modelAngle, ref smoothTurningVel, smoothTurningTime);  //modelin dönüşünü yumuşatan metot
+                transform.rotation = Quaternion.Euler(angleX, angle, angleZ);
+                Vector3 moveDirection = Quaternion.Euler(0f, modelAngle, 0f) * Vector3.forward;
+                controller.Move(moveDirection.normalized * speed * Time.deltaTime);
+                speedAnim = 1;
+            }
+            else
+            {
+                speedAnim = 0;
+            }
+        }
+        if (GameScriptForSelect.model == "Dog") animDog.SetFloat("Speed", speedAnim, 0.1f, Time.deltaTime);
+        else if (GameScriptForSelect.model == "DogL") animDogL.SetFloat("Speed", speedAnim, 0.1f, Time.deltaTime);
+        else if (GameScriptForSelect.model == "Lion") animLion.SetFloat("Speed", speedAnim, 0.1f, Time.deltaTime);
+        else animLionD.SetFloat("Speed", speedAnim, 0.1f, Time.deltaTime);
+
+        /*             /Movement            */
+
+
+        /*             Gravity              */
+
+        if (setGravity)
+        {
+            if (controller.isGrounded)
+            {
+                verticalVel = -gravity * Time.deltaTime;
+            }
+            else
+            {
+                verticalVel -= gravity * Time.deltaTime;
+            }
+            Vector3 gravityMove = new Vector3(0f, verticalVel, 0f);
+            controller.Move(gravityMove * Time.deltaTime);
+        }
+    }
+}
