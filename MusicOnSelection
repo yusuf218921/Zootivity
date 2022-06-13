@@ -1,0 +1,37 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class MusicOnSelection : MonoBehaviour
+{
+    [SerializeField]
+    private GameObject Music;
+
+
+
+
+
+    public void Start()
+    {
+        if(MusicOn.i == 1)
+        {
+            Music.SetActive(false);
+        }
+    }
+
+    public void PressedMusicOnButton()
+    {
+        if (MusicOn.i == 0)
+        {
+            Music.SetActive(false);
+            MusicOn.i = 1;
+        }
+
+        else
+        {
+            Music.SetActive(true);
+            MusicOn.i = 0;
+        }
+
+    }
+}
