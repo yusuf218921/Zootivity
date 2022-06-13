@@ -1,0 +1,23 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using DG.Tweening;
+
+public class MenuLevel : MonoBehaviour
+{
+    [SerializeField]
+    private Transform StartButton, ExitButton, MusicOnButton, Text;
+
+    
+    void Start()
+    {
+        StartButton.transform.GetComponent<RectTransform>().DOLocalMoveX(0f,1.2f).SetEase(Ease.OutBack);
+        ExitButton.transform.GetComponent<RectTransform>().DOLocalMoveX(0f, 1.6f).SetEase(Ease.OutBack);
+        MusicOnButton.transform.GetComponent<RectTransform>().DOLocalMoveX(0f, 1.4f).SetEase(Ease.OutBack);
+        Text.transform.GetComponent<RectTransform>().DOLocalMoveY(451f, 1f).SetEase(Ease.OutBack);
+        
+
+    }
+
+    
+}
